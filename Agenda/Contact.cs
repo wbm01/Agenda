@@ -13,7 +13,7 @@ namespace Agenda
         public string Phone { get; set; }
         public string? Email { get; set; }
 
-        public Contact(string name, string phone, string email) { 
+        public Contact(string name, string phone, string email, Address) { 
         
             this.Name = name;
             this.Address = new Address();
@@ -35,10 +35,15 @@ namespace Agenda
             this.Name = name;
         }
 
-        public override string ToString()
+        public string ToUser()
         {
 
-            return "Nome: " + Name + "\nTelefone: " + Phone + "\nEmail: " + Email + Address.ToString();
+            return "Nome: " + Name + "\nTelefone: " + Phone + "\nEmail: " + Email + Address.ToUser();
+        }
+
+        public override string ToString()
+        {
+            return Name + "," + Phone + "," + Email + "," + Address.ToString();
         }
     }
 }

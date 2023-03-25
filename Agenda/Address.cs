@@ -14,9 +14,13 @@ namespace Agenda
         public string PostalCode;
         public string Country;
 
-        public Address()
+        public Address(string street, string city, string state, string country, string postalcode)
         {
-
+            this.Street = street;
+            this.City = city;
+            this.State = state;
+            this.Country = country;
+            this.PostalCode = postalcode;
         }
 
         public void EditStreet(string street)
@@ -46,8 +50,13 @@ namespace Agenda
         
         public override string ToString() { 
         
-        return "\nEndereço: " + Street + "\nEstado: " + State + "\nCidade: " + City +
-                "\nPaís: " + Country + "\nCEP: " + PostalCode;
+        return Street + "," + City + "," + State + "," + Country + "," + PostalCode;
+        }
+
+        public string ToUser()
+        {
+            return "\nEndereço: " + Street + "\nEstado: " + State + "\nCidade: " + City +
+               "\nPaís: " + Country + "\nCEP: " + PostalCode;
         }
     }
 }
