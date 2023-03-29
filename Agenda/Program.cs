@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Channels;
 using Agenda;
 
 internal class Program
@@ -14,7 +16,7 @@ internal class Program
         char escolha2;
         string aux2;
 
-        CarregarLista(phonebook, "agenda.txt");
+       phonebook = CarregarLista();
 
 
         do
@@ -45,7 +47,7 @@ internal class Program
                         PrintPhoneBook(phonebook);
                         break;
                     }
-                    else if (escolha == 'n' || escolha == 'N')
+                    if (escolha == 'n' || escolha == 'N')
                     {
                         {
                             try
@@ -146,42 +148,65 @@ internal class Program
             return text;
         }
 
-        List<Contact>CarregarLista(List<Contact>e,string s)
+        List<Contact>CarregarLista()
         {
-            StreamReader sr = new StreamReader (s);
-
-            while (!sr.EndOfStream)
+            if (File.Exists("agenda.txt"))
             {
-                string[] aux3 = sr.ReadLine().Split(",");
 
-                string nome = aux3[0];
-                string telefone = aux3[1];
-                string email = aux3[2];
-                string endereco = aux3[3];
-                string cidade = aux3[4];
-                string estado = aux3[5];
-                string pais = aux3[6];
-                string codigopostal = aux3[7];
+                StreamReader sr = new StreamReader("agenda.txt");
 
-                return e.Add(new Contact (nome, telefone, email));
+                string tx = "";
+               
+                
+                while ((tx = sr.ReadLine()) != null)
+                {
+                    var aux3 = tx.Split(",");
 
-            }
+                    Address address = new Address();
+
+                    /*newContact.Name = aux3[0];
+                    newContact.Phone = aux3[1];
+                    newContact.Email = aux3[2];*/
+
+                    string name = aux3[0];
+                    string phone = aux3[1];
+                    string email = aux3[2];
+                    
+
+                    Contact nc = new Contact(name,phone,email);
+
+                    nc.Address.Street = aux3[3];
+                    nc.Address.City = aux3[4];
+                    nc.Address.State = aux3[5];
+                    nc.Address.Country = aux3[6];
+                    nc.Address.PostalCode = aux3[7];
+
+                    phonebook.Add(nc);
+
+                }
             sr.Close();
+            return phonebook;
+            }
+            else
+            {
+                Console.WriteLine("Iniciando...");
+                Thread.Sleep(1000);
+                Console.Clear();
+                
+            }
             
-            return e;
+            return phonebook;
 
         }
+
+        
         void PrintPhoneBook(List<Contact> l)
         {
             foreach (var item in l)
             {
-                List<Contact> listaordenada = l.OrderBy(Contact => Contact.Name).ToList();
-
-                for (int i = 0; i < listaordenada.Count; i++)
-                {
-                    Console.WriteLine(listaordenada[i].ToUser());
-                    Console.WriteLine();
-                }
+                Console.WriteLine();
+                Console.WriteLine(item.ToUser());
+                Console.WriteLine();
             }
         }
 
@@ -221,20 +246,27 @@ internal class Program
 
         Contact DeleteContact()
         {
-            Console.Write("Informe o nome: ");
+            Console.Write("\nInforme o nome: ");
             var n = Console.ReadLine();
 
-            foreach (var item in phonebook)
+            try
             {
-                if (item.Name.Equals(n))
+                foreach (var item in phonebook)
                 {
-                    return item;
-                }
-                else
-                {
-                    Console.WriteLine("Contato não encontrado");
+                    if (item.Name.Equals(n))
+                    {
+                        Console.WriteLine("\nContato deletado com sucesso!");
+                        return item;
+                    }
                 }
             }
+            catch
+                {
+                    Console.WriteLine("Contato não encontrado");
+                    Console.WriteLine("\nPressione qualquer tecla para retornar ao menu.");
+                    Console.ReadKey();
+                }
+            
 
             return null;
         }
@@ -283,11 +315,11 @@ internal class Program
         {
             Console.Write("\nInforme o nome para alteração: ");
             string n = Console.ReadLine();
-            string aux = char.ToUpper(n[0]) + n.Substring(1);
+            //string aux = char.ToUpper(n[0]) + n.Substring(1);
 
             foreach (var item2 in phonebook)
             {
-                if (item2.Name.Equals(aux))
+                if (item2.Name.Contains(n))
                 {
                     int op2;
                     bool retorno2 = false;
@@ -299,44 +331,44 @@ internal class Program
                         switch (op2)
                         {
                             case 1:
-                                Console.WriteLine("Informe o nome: ");
+                                Console.Write("\nInforme o nome: ");
                                 string a = Console.ReadLine();
-                                string aux2 = char.ToUpper(n[0]) + n.Substring(1);
-                                item2.EditName(n);
+                                //string aux2 = char.ToUpper(n[0]) + n.Substring(1);
+                                string retorno = item2.EditName(a);
                                 break;
 
                             case 2:
-                                Console.WriteLine("Informe o telefone: ");
+                                Console.Write("\nInforme o telefone: ");
                                 n = Console.ReadLine();
-                                item2.EditPhone(n);
+                                string retorno3 = item2.EditPhone(n);
                                 break;
 
                             case 3:
-                                Console.WriteLine("Informe o email: ");
+                                Console.Write("\nInforme o email: ");
                                 n = Console.ReadLine();
-                                item2.EditEmail(n);
+                                string retorno4 = item2.EditEmail(n);
                                 break;
 
                             case 4:
-                                Console.WriteLine("Informe o endereço: ");
+                                Console.Write("\nInforme o endereço: ");
                                 n = Console.ReadLine();
-                                item2.Address.EditStreet(n);
+                                string retorno5 = item2.Address.EditStreet(n);
 
-                                Console.WriteLine("Informe o estado: ");
+                                Console.Write("\nInforme o estado: ");
                                 n = Console.ReadLine();
-                                item2.Address.EditState(n);
+                                string retorno6 = item2.Address.EditState(n);
 
-                                Console.WriteLine("Informe a cidade: ");
+                                Console.Write("\nInforme a cidade: ");
                                 n = Console.ReadLine();
-                                item2.Address.EditCity(n);
+                                string retorno7 = item2.Address.EditCity(n);
 
-                                Console.WriteLine("Informe o país: ");
+                                Console.Write("\nInforme o país: ");
                                 n = Console.ReadLine();
-                                item2.Address.EditCountry(n);
+                                string retorno8 = item2.Address.EditCountry(n);
 
-                                Console.WriteLine("Informe o CEP: ");
+                                Console.Write("\nInforme o CEP: ");
                                 n = Console.ReadLine();
-                                item2.Address.EditPostalCode(n);
+                                string retorno9 = item2.Address.EditPostalCode(n);
                                 break;
 
                                 case 5:
@@ -347,6 +379,11 @@ internal class Program
                         }
                     }
                     while (retorno2 == true);
+                }
+                else
+                {
+                    Console.WriteLine("Nome não encontrado!");
+                    break;
                 }
             }
         }

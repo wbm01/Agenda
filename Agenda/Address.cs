@@ -14,38 +14,39 @@ namespace Agenda
         public string PostalCode;
         public string Country;
 
-        public Address(string street, string city, string state, string country, string postalcode)
+        public Address()
+        {
+           
+        }
+
+        public string EditStreet(string street)
         {
             this.Street = street;
-            this.City = city;
-            this.State = state;
-            this.Country = country;
-            this.PostalCode = postalcode;
+            return this.Street;
         }
 
-        public void EditStreet(string street)
-        {
-            this.Street = street;
-        }
-
-        public void EditCity(string city)
+        public string EditCity(string city)
         {
             this.City = city;
+            return this.City;
         }
 
-        public void EditState(string state)
+        public string EditState(string state)
         {
             this.State = state;
+            return this.State;
         }
 
-        public void EditPostalCode(string postalcode)
+        public string EditPostalCode(string postalcode)
         {
             this.PostalCode = postalcode;
+            return this.PostalCode;
         }
 
-        public void EditCountry(string country)
+        public string EditCountry(string country)
         {
             this.Country = country;
+            return this.Country;
         }
         
         public override string ToString() { 

@@ -13,26 +13,29 @@ namespace Agenda
         public string Phone { get; set; }
         public string? Email { get; set; }
 
-        public Contact(string name, string phone, string email, Address) { 
+        public Contact(string name, string phone, string email){ 
         
             this.Name = name;
-            this.Address = new Address();
             this.Phone = phone;
             this.Email = email;
+            this.Address = new Address();
         }
 
-        public void EditPhone(string phone)
+        public string EditPhone(string phone)
         {
             this.Phone = phone;
+            return this.Phone;
         }
 
-        public void EditEmail(string email) { 
+        public string EditEmail(string email) { 
             this.Email = email;
+            return this.Email;
         }
 
-        public void EditName(string name)
+        public string EditName(string name)
         {
             this.Name = name;
+            return this.Name;
         }
 
         public string ToUser()
